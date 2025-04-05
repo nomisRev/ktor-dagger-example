@@ -1,34 +1,32 @@
 package com.example
 
-import dagger.Component
+import com.example.config.AppModule
+import com.example.config.DaggerApplicationComponent
+import com.example.features.comments.api.commentRoutes
+import com.example.posts.postRoutes
+import com.example.users.userRoutes
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import javax.inject.Inject
-import javax.inject.Singleton
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.resources.*
+import io.ktor.server.routing.*
 
-fun main(args: Array<String>) {
+fun main(args: Array<String>) =
     io.ktor.server.netty.EngineMain.main(args)
-}
 
 fun Application.module() {
-    val test = Test()
-    val iNeedTest = INeedTest(test)
+    val component = DaggerApplicationComponent.builder()
+        .appModule(AppModule(this))
+        .build()
 
-    val component = DaggerApplicationComponent.create()
-    configureRouting()
-}
+    install(Resources)
+    install(ContentNegotiation) {
+        json()
+    }
 
-@Singleton
-@Component
-interface ApplicationComponent {
-    fun needTest(): INeedTest
-}
-
-@Singleton
-class Test @Inject constructor() {
-    fun hello() = "Hello"
-}
-
-@Singleton
-class INeedTest @Inject constructor(private val test: Test) {
-    fun test() = test.hello()
+    routing {
+        userRoutes(component.userRepository())
+        postRoutes(component.postRepository())
+        commentRoutes(component.commentRepository())
+    }
 }
