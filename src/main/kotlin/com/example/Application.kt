@@ -20,9 +20,7 @@ fun Application.module() {
         .build()
 
     install(Resources)
-    install(ContentNegotiation) {
-        json()
-    }
+    install(ContentNegotiation) { json() }
 
     routing {
         userRoutes(component.userRepository())

@@ -1,11 +1,8 @@
-val kotlin_version: String by project
-val logback_version: String by project
-
 plugins {
-    kotlin("jvm") version "2.1.20"
-    id("io.ktor.plugin") version "3.1.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.20"
-    id("com.google.devtools.ksp") version "2.1.20-1.0.32"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 group = "com.example"
@@ -23,33 +20,26 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core")
-    implementation("io.ktor:ktor-server-resources")
-    implementation("io.ktor:ktor-server-netty")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.ktor:ktor-server-config-yaml")
-    implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
-    implementation("com.google.dagger:dagger:2.48")
-    ksp("com.google.dagger:dagger-compiler:2.48")
-//    ksp "com.google.dagger:hilt-compiler:2.48"   // Hilt compiler
+    implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.logback.classic)
+    implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
-    // Exposed
-    implementation("org.jetbrains.exposed:exposed-core:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.48.0")
+    implementation(libs.dagger.core)
+    ksp(libs.dagger.compiler)
 
-    // PostgreSQL
-    implementation("org.postgresql:postgresql:42.7.1")
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
 
-    // HikariCP for connection pooling
-    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation(libs.postgresql)
+    implementation(libs.hikaricp)
 
-    // TestContainers
-    testImplementation("org.testcontainers:testcontainers:1.19.3")
-    testImplementation("org.testcontainers:postgresql:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    testImplementation(libs.testcontainers.core)
+    testImplementation(libs.testcontainers.postgresql)
+    testImplementation(libs.testcontainers.junit.jupiter)
 
-    testImplementation("io.ktor:ktor-server-test-host")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.kotlin.test.junit)
 }
