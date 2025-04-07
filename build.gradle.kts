@@ -28,6 +28,8 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
 
     implementation(libs.dagger.core)
+    implementation("io.ktor:ktor-client-resources:3.1.2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.1.2")
     ksp(libs.dagger.compiler)
 
     implementation(libs.exposed.core)

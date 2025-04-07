@@ -16,12 +16,12 @@ import kotlinx.serialization.Serializable
 @Resource("/comments")
 class CommentsResource {
     @Resource("{id}")
-    class Id(val parent: CommentsResource = CommentsResource(), val id: Int)
+    class Id(val id: Int, val parent: CommentsResource = CommentsResource())
 }
 
-fun Application.commentRoutes(commentRepository: CommentRepository) = routing {
+fun Application.commentRoutes(repo: CommentRepository) = routing {
     get<PostsResource.Comments> { route ->
-        val comments = commentRepository.getByPostIdWithUsers(route.parent.id)
+        val comments = repo.getByPostIdWithUsers(route.parent.id)
         call.respond(comments)
     }
 
@@ -36,7 +36,7 @@ fun Application.commentRoutes(commentRepository: CommentRepository) = routing {
             "Content is required"
         )
 
-        val comment = commentRepository.create(route.parent.id, userId, content)
+        val comment = repo.create(route.parent.id, userId, content)
         call.respond(HttpStatusCode.Created, comment)
     }
 }

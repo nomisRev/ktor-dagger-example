@@ -9,10 +9,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import javax.inject.Singleton
 
 @Singleton
@@ -37,17 +39,22 @@ class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun dataSource(): HikariDataSource =
+    fun dataSource(config: ApplicationConfig): HikariDataSource =
         HikariDataSource(HikariConfig().apply {
-            driverClassName = "org.postgresql.Driver"
-            jdbcUrl = "jdbc:postgresql://localhost:5432/ktordagger"
-            username = "postgres"
-            password = "postgres"
+            driverClassName = config.property("database.driverClassName").getString()
+            jdbcUrl = config.property("database.jdbcUrl").getString()
+            username = config.property("database.username").getString()
+            password = config.property("database.password").getString()
             validate()
         })
 
     @Provides
     @Singleton
     fun database(dataSource: HikariDataSource): Database =
-        Database.connect(dataSource)
+        Database.connect(dataSource).also { database ->
+            application.monitor.subscribe(ApplicationStopped) {
+                TransactionManager.closeAndUnregister(database)
+                dataSource.close()
+            }
+        }
 }

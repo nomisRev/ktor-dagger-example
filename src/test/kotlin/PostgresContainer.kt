@@ -50,9 +50,7 @@ object PostgresContainer {
      */
     fun getMapAppConfig() =
         MapApplicationConfig().apply {
-            put("database.host", container.host)
-            put("database.port", container.firstMappedPort.toString())
-            put("database.name", container.databaseName)
+            put("database.jdbcUrl", container.jdbcUrl)
             put("database.username", container.username)
             put("database.password", container.password)
             put("database.driverClassName", container.driverClassName)

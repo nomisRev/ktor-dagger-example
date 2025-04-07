@@ -4,7 +4,6 @@ import com.example.users.UsersResource
 import io.ktor.http.*
 import io.ktor.resources.Resource
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.resources.get
 import io.ktor.server.resources.post
 import io.ktor.server.response.*
@@ -16,6 +15,14 @@ import kotlinx.serialization.Serializable
 class PostsResource {
     @Resource("{id}")
     class Id(val parent: PostsResource = PostsResource(), val id: Long)
+
+    @Resource("/")
+    class Create(
+        val userId: Long,
+        val title: String,
+        val content: String,
+        val parent: UsersResource = UsersResource(),
+    )
 
     @Resource("{id}/comments")
     class Comments(val parent: Id)
@@ -40,17 +47,8 @@ fun Application.postRoutes(postRepository: PostRepository) = routing {
         call.respond(posts)
     }
 
-    post<PostsResource> {
-        val postParams = call.receive<Map<String, String>>()
-        val userId = postParams["userId"]?.toLongOrNull() ?: return@post call.respond(
-            HttpStatusCode.BadRequest,
-            "Valid userId is required"
-        )
-        val title = postParams["title"] ?: return@post call.respond(HttpStatusCode.BadRequest, "Title is required")
-        val content =
-            postParams["content"] ?: return@post call.respond(HttpStatusCode.BadRequest, "Content is required")
-
-        val post = postRepository.create(userId, title, content)
+    post<PostsResource.Create> { create ->
+        val post = postRepository.create(create.userId, create.title, create.content)
         call.respond(HttpStatusCode.Created, post)
     }
 }

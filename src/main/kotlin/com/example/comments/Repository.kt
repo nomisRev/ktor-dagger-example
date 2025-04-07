@@ -1,8 +1,5 @@
 package com.example.comments
 
-import com.example.features.comments.domain.Comment
-import com.example.features.comments.domain.CommentWithPostAndUser
-import com.example.features.comments.domain.CommentWithUser
 import com.example.features.posts.domain.Post
 import com.example.com.example.users.User
 import com.example.posts.PostTable
@@ -65,6 +62,7 @@ class CommentRepository @Inject constructor(private val database: Database) {
     fun getByPostId(postId: Long): List<Comment> = transaction(database) {
         CommentTable.selectAll()
             .where { CommentTable.postId eq postId }
+            .orderBy(CommentTable.id)
             .map { it.toComment() }
     }
 
@@ -72,12 +70,14 @@ class CommentRepository @Inject constructor(private val database: Database) {
         CommentTable.innerJoin(UserTable)
             .selectAll()
             .where { CommentTable.postId eq postId }
+            .orderBy(CommentTable.id)
             .map { it.toCommentWithUser() }
     }
 
     fun getByUserId(userId: Long): List<Comment> = transaction(database) {
         CommentTable.selectAll()
             .where { CommentTable.userId eq userId }
+            .orderBy(CommentTable.id)
             .map { it.toComment() }
     }
 
@@ -87,6 +87,7 @@ class CommentRepository @Inject constructor(private val database: Database) {
             .innerJoin(UserTable) { CommentTable.userId eq UserTable.id }
             .selectAll()
             .where { CommentTable.userId eq userId }
+            .orderBy(CommentTable.id)
             .map { it.toCommentWithPostAndUser() }
     }
 
@@ -94,7 +95,7 @@ class CommentRepository @Inject constructor(private val database: Database) {
         CommentTable.deleteWhere { CommentTable.id eq id } > 0
     }
 
-    private fun ResultRow.toComment(): Comment = Comment(
+    private fun ResultRow.toComment() = Comment(
         id = this[CommentTable.id].value,
         postId = this[CommentTable.postId],
         userId = this[CommentTable.userId],
@@ -102,7 +103,7 @@ class CommentRepository @Inject constructor(private val database: Database) {
         createdAt = this[CommentTable.createdAt]
     )
 
-    private fun ResultRow.toCommentWithUser(): CommentWithUser = CommentWithUser(
+    private fun ResultRow.toCommentWithUser() = CommentWithUser(
         id = this[CommentTable.id].value,
         postId = this[CommentTable.postId],
         content = this[CommentTable.content],
@@ -115,7 +116,7 @@ class CommentRepository @Inject constructor(private val database: Database) {
         )
     )
 
-    private fun ResultRow.toCommentWithPostAndUser(): CommentWithPostAndUser = CommentWithPostAndUser(
+    private fun ResultRow.toCommentWithPostAndUser() = CommentWithPostAndUser(
         id = this[CommentTable.id].value,
         content = this[CommentTable.content],
         createdAt = this[CommentTable.createdAt],
