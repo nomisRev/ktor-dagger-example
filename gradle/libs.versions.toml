@@ -8,6 +8,7 @@ postgresql = "42.7.1"
 hikaricp = "5.1.0"
 testcontainers = "1.19.3"
 ksp = "2.1.20-1.0.32"
+kotlin-inject = "0.6.1"
 
 [libraries]
 # Ktor
@@ -24,6 +25,10 @@ logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.
 # Dagger
 dagger-core = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+
+# Kotlin-Inject
+kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlin-inject" }
+kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 
 # Database
 exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
