@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 
 include(":dagger")
 include(":kotlin-inject")
+include(":koin")
