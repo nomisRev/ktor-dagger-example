@@ -1,0 +1,12 @@
+ktor:
+  application:
+    modules:
+      - "com.example.DI.di"
+      - "com.example.ApplicationKt.module"
+  deployment:
+    port: 8080
+database:
+  driverClassName: "org.postgresql.Driver"
+  jdbcUrl: "jdbc:postgresql://localhost:5432/ktordagger"
+  username: "postgres"
+  password: "postgres"

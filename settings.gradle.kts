@@ -1,4 +1,4 @@
-rootProject.name = "ktor-dagger-example"
+rootProject.name = "ktor-di-overview"
 
 dependencyResolutionManagement {
     repositories {
@@ -9,3 +9,5 @@ dependencyResolutionManagement {
 include(":dagger")
 include(":kotlin-inject")
 include(":koin")
+include(":kodein")
+include(":ktor-di")
